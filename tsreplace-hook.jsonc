@@ -1,0 +1,57 @@
+{
+  // Webhookを受信するポート。
+  "port": 7530,
+
+  // EDCBで録画したファイルが配置されるディレクトリ。
+  // null の場合は EDCB から渡された `$FilePath$` の値が使われます。
+  "edcbRecordFileDir": "/media/archive/TV-Record",
+
+  // 置き換え後のファイルを配置するディレクトリ。
+  "replacedFileDir": "/media/archive/TV-Record/replaced",
+
+  // 置き換え後のファイル名。
+  // https://github.com/xtne6f/EDCB/blob/work-plus-s-211118/Document/Readme_EpgTimer.txt//L929-L1008 と
+  // https://github.com/xtne6f/EDCB/blob/work-plus-s-211118/Document/Readme_Mod.txt//L463-L487 に記載されている EDCB のマクロが使えます。
+  // マクロは $$ で囲んでください (ex: $ServiceName$)。また、配列の要素ごとに改行されます。
+
+  // また、EDCBNotifierで追加されているいくつかのマクロも使用できます。
+  // ・$NotifyName$ … $NotifyID$ から取得した更新通知タイプ (1: EPGデータ更新, 2: 予約情報更新, 3: 録画結果情報更新)
+  // ・$ServiceNameHashTag$ … チャンネル名から取得したハッシュタグ (ハッシュタグは utils.py の Utils.getServiceNameHashtag() メソッドで定義)
+  // ・$TitleHashTag$ … 番組名から取得したハッシュタグ(ハッシュタグは上記の title_hashtag で定義)
+  // ・$ServiceNameHankaku$ … $ServiceName$ (チャンネル名) の英数字を半角に置換した値
+  // ・$TitleHankaku$ … $Title$ (番組名) の英数字を半角に置換した値
+  // ・$Title2Hankaku$ … $Title2$ (番組名から [] で囲まれている部分を削除したもの) の英数字を半角に置換した値
+  // ・$TimeYYYY$ … 実行時刻の上2桁付き西暦年 (ex: 2022 (年)) ・$TimeYY$ … 実行時刻の上2桁なし西暦年 (ex: 22 (年))
+  // ・$TimeMM$ … 実行時刻の2桁固定の月 (ex: 01 (月)) ・$TimeM$ … 実行時刻の月 (ex: 1 (月))
+  // ・$TimeDD$ … 実行時刻の2桁固定の日 (ex: 03 (日)) ・$TimeD$ … 実行時刻の日 (ex: 3 (日))
+  // ・$TimeW$ … 実行時刻の曜日 (ex: 火 (曜日))
+  // ・$TimeHH$ … 実行時刻の2桁固定の時 (24時間) (ex: 09 (時))  $TimeH$ … 実行時刻の日 (ex: 9 (時))
+  // ・$TimeII$ … 実行時刻の2桁固定の分 (ex: 05 (分)) ・$TimeI$ … 実行時刻の分 (ex: 5 (分))
+  // ・$TimeSS$ … 実行時刻の2桁固定の秒 (ex: 09 (秒)) ・$TimeS$ … 実行時刻の分 (ex: 9 (秒))
+  "replacedFileName": "%FileName%.%Codec%.ts",
+
+  // tsreplace の処理完了後に元録画ファイルを削除するか。
+  "removeAfterReplace": false,
+
+  // tsreplace 関連設定
+  "tsreplace": {
+
+    // tsreplace の実行ファイルのパス。
+    "path": "tsreplace",
+
+    // tsreplace の実行時に指定するパラメータ。
+    // `--encoder` オプションは除いて記述してください。
+    "params": "",
+
+    // tsreplace で使用するエンコーダのパス。
+    // tsreplace の `--encoder` オプションにあたります。
+    "encoder": "nvencc",
+
+    // 置き換える動画のコーデック。
+    // tsreplace で使用するエンコーダ内の `-c` (QSVEncC, NvEncC, VCEEncCなど), `-c:v` (ffmpeg) オプションにあたります。
+    "encoderCodec": "hevc",
+
+    // tsreplace で使用するエンコーダのパラメータ。
+    "encoderParams": "--input-format mpegts --avhw --vpp-yadif mode=bob -u P7 --multipass 2pass-quarter --lookahead 30 --aq --aq-temporal --qvbr 27 --gop-len 90 --bref-mode each --output-format mpegts"
+  }
+}

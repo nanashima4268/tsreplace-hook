@@ -1,0 +1,18 @@
+{
+  "name": "tsreplace-hook",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.2",
+    "hono": "^4.6.17",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.24.1"
+  }
+}
