@@ -15,21 +15,26 @@ app.post("/", zValidator("json", bodySchema), async (c) => {
 
 	if (!body) {
 		console.log("Request doesn't contain body.");
-		throw new HTTPException(400, { message: "Please include record info to request body." });
-	} else if (body.FileName === "--") {
+		throw new HTTPException(400, {
+			message: "Please include record info to request body.",
+		});
+	}
+
+	if (body.FileName === "--") {
 		console.log("Request is not PostRecEnd webhook. Skipping.");
 		return c.status(200);
 	}
 
 	const macro = {
 		...body,
+		Encoder: config.tsreplace.encoder,
 		Codec: config.tsreplace.encoderCodec,
 	};
 
 	const filePath = path.join(config.edcbRecordFileDir, `${body.FileName}.ts`);
 
 	if (await fs.exists(filePath)) {
-		const newFilename = Object.entries(macro).reduce((filename, [key, value]) => filename.replace(`%${key}%`, value), config.replacedFileName);
+		const newFilename = Object.entries(macro).reduce((filename, [key, value]) => filename.replace(`$${key}$`, value), config.replacedFileName);
 
 		return streamText(c, async (stream) => {
 			const proc = Bun.spawn([
@@ -58,12 +63,16 @@ app.post("/", zValidator("json", bodySchema), async (c) => {
 				console.log(proc.stderr);
 			} else if (config.removeAfterReplace) {
 				await fs.unlink(filePath);
+				await fs.unlink(`${filePath}.err`);
+				await fs.unlink(`${filePath}.program.txt`);
 			}
 		});
-	} else {
-		console.log(`Recorded TS file "${filePath}" not found.`);
-		throw new HTTPException(404, { message: `Recorded TS file "${filePath}" not found.` });
 	}
+
+	console.log(`Recorded TS file "${filePath}" not found.`);
+	throw new HTTPException(404, {
+		message: `Recorded TS file "${filePath}" not found.`,
+	});
 });
 
 export default {

@@ -28,10 +28,10 @@
   // ・$TimeHH$ … 実行時刻の2桁固定の時 (24時間) (ex: 09 (時))  $TimeH$ … 実行時刻の日 (ex: 9 (時))
   // ・$TimeII$ … 実行時刻の2桁固定の分 (ex: 05 (分)) ・$TimeI$ … 実行時刻の分 (ex: 5 (分))
   // ・$TimeSS$ … 実行時刻の2桁固定の秒 (ex: 09 (秒)) ・$TimeS$ … 実行時刻の分 (ex: 9 (秒))
-  "replacedFileName": "%FileName%.%Codec%.ts",
+  "replacedFileName": "$TimeYYYY$$TimeMM$$TimeDD$-$FileName$.$Codec$.ts",
 
   // tsreplace の処理完了後に元録画ファイルを削除するか。
-  "removeAfterReplace": false,
+  "removeAfterReplace": true,
 
   // tsreplace 関連設定
   "tsreplace": {
@@ -41,7 +41,7 @@
 
     // tsreplace の実行時に指定するパラメータ。
     // `--encoder` オプションは除いて記述してください。
-    "params": "",
+    "params": "--remove-typed",
 
     // tsreplace で使用するエンコーダのパス。
     // tsreplace の `--encoder` オプションにあたります。
